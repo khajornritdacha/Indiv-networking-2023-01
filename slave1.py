@@ -2,7 +2,8 @@
 import socket
 from overdrive import Overdrive
 
-car = Overdrive("D5:C7:94:15:78:8D")
+# Shock
+car = Overdrive("CE:71:D1:FC:B5:4F")
 
 cur_ip = "jopi.local"
 cur_port = 7956
@@ -22,17 +23,20 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect((next_ip, next_port))
 
 while True :
-    request = client_socket.recv(1024).decode("utf-8")
-    if (request.lower() == "close") :
-        client.close()
-        client_socket.send("closed".encode("utf-8"))
-        break
+    try:
+        request = client_socket.recv(1024).decode("utf-8")
+        if (request.lower() == "close") :
+            client_socket.send("closed".encode("utf-8"))
+            break
 
-    print(f"Received: {request}")
+        print(f"Received: {request}")
 
-    response = "accepted".encode("utf-8")
-    car.changeSpeed(int(request), 1000)
-    client.send(request.encode("utf-8"))
+        response = "accepted".encode("utf-8")
+        car.changeSpeed(int(request[5:]), 1000)
+        client.send(request.encode("utf-8"))
+    except Exception as e:
+        print(e)
 
+client.close()
 client_socket.close()
 server.close()

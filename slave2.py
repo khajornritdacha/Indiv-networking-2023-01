@@ -2,6 +2,7 @@
 import socket
 from overdrive import Overdrive
 
+# Skull
 car = Overdrive("D5:C7:94:15:78:8D")
 
 cur_ip = "kangbid.local"
@@ -16,15 +17,18 @@ client_socket, addr = server.accept()
 print(f"Accepted connection from {addr[0]}:{addr[1]}")
 
 while True :
-    request = client_socket.recv(1024).decode("utf-8")
-    if (request.lower() == "close") :
-        client_socket.send("closed".encode("utf-8"))
-        break
+    try:
+        request = client_socket.recv(1024).decode("utf-8")
+        if (request.lower() == "close") :
+            client_socket.send("closed".encode("utf-8"))
+            break
 
-    print(f"Received: {request}")
+        print(f"Received: {request}")
 
-    response = "accepted".encode("utf-8")
-    car.changeSpeed(int(request), 1000)
-
+        response = "accepted".encode("utf-8")
+        car.changeSpeed(int(request[5:]), 1000)
+    except Exception as e:
+        print(e)
+        
 client_socket.close()
 server.close()

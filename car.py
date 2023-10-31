@@ -3,6 +3,7 @@ from overdrive import Overdrive
 from carEnum import CarOperation
 
 class Car:
+    # TODO: handle close connection
     def __init__(self, car_mac_addr, next_ip, next_port, **kwargs):
         self.car = Overdrive(car_mac_addr)
         
@@ -12,11 +13,12 @@ class Car:
         self.cur_port = None
         self.server = None
 
-        self.next_car = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.next_car.connect((self.next_ip, self.next_port))
-        print(f"Connected to {self.next_ip}:{self.next_port}")
+        if self.next_ip is not None and self.next_port is not None:
+            self.next_car = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.next_car.connect((self.next_ip, self.next_port))
+            print(f"Connected to {self.next_ip}:{self.next_port}")
 
-        if "cur_ip" and "cur_port" in kwargs:
+        if kwargs["cur_ip"] is not None and kwargs["cur_port"] is not None:
             self.cur_ip = kwargs["cur_ip"]
             self.cur_port = kwargs["cur_port"]
             self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -58,39 +60,32 @@ class Car:
             self.prev_car.send(CarOperation.OK.value.encode("utf-8"))
 
     def get_input(self):
-        try:
-            request = input("Enter new command(close/accel/decel): ")
-            op, speed = self.parse_request(request)
+        request = input("Enter new command(close/accel/decel): ")
+        op, speed = self.parse_request(request)
 
-            match op:
-                case CarOperation.CLOSE.value:
-                    self.handle_close()
-                case CarOperation.ACCEL.value:
-                    self.handle_accel(request, speed)
-                case CarOperation.DECEL.value:
-                    self.handle_decel(request, speed)
-                case _:
-                    raise Exception("Invalid operation")
-        except Exception as e:
-            print(e)
-    
+        match op:
+            case CarOperation.CLOSE.value:
+                self.handle_close()
+            case CarOperation.ACCEL.value:
+                self.handle_accel(request, speed)
+            case CarOperation.DECEL.value:
+                self.handle_decel(request, speed)
+            case _:
+                raise Exception("Invalid operation")
+            
     def get_request(self):
-        try:
-            request = self.prev_car.recv(1024).decode("utf-8")
-            op, speed = self.parse_request(request)
+        request = self.prev_car.recv(1024).decode("utf-8")
+        op, speed = self.parse_request(request)
 
-            match op:
-                case CarOperation.CLOSE.value:
-                    self.handle_close()
-                case CarOperation.ACCEL.value:
-                    self.handle_accel(request, speed)
-                case CarOperation.DECEL.value:
-                    self.handle_decel(request, speed)
-                case _:
-                    raise Exception("Invalid operation")
-
-        except Exception as e:
-            print(e)
+        match op:
+            case CarOperation.CLOSE.value:
+                self.handle_close()
+            case CarOperation.ACCEL.value:
+                self.handle_accel(request, speed)
+            case CarOperation.DECEL.value:
+                self.handle_decel(request, speed)
+            case _:
+                raise Exception("Invalid operation")
 
     def __del__(self):
         self.prev_car.close()

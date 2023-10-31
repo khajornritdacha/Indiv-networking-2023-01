@@ -7,6 +7,3 @@ class CarOperation(Enum):
     LANE_LEFT = "lane_left"
     LANE_RIGHT = "lane_right"
     OK = "OK"
-
-print(CarOperation.ACCEL.name)
-print(CarOperation.ACCEL.value)

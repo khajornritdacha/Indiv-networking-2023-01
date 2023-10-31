@@ -34,8 +34,9 @@ while True :
             break
         
         if op == CarOperation.ACCEL.value:
-            car.changeSpeed(int(request[5:]), 1000)
+            car.changeSpeed(speed, 1000)
             response = CarOperation.OK.encode("utf-8")
+            client_socket.send(response)
             next_client.send(request.encode("utf-8"))
 
         elif op == CarOperation.DECEL.value:
@@ -50,6 +51,7 @@ while True :
             
             car.changeSpeed(speed, 1000)
             response = CarOperation.OK.encode("utf-8")
+            client_socket.send(response)
 
     except Exception as e:
         print(e)

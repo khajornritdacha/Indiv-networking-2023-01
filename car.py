@@ -63,29 +63,27 @@ class Car:
         request = input("Enter new command(close/accel/decel): ")
         op, speed = self.parse_request(request)
 
-        match op:
-            case CarOperation.CLOSE.value:
-                self.handle_close()
-            case CarOperation.ACCEL.value:
-                self.handle_accel(request, speed)
-            case CarOperation.DECEL.value:
-                self.handle_decel(request, speed)
-            case _:
-                raise Exception("Invalid operation")
+        if op == CarOperation.CLOSE.value:
+            self.handle_close()
+        elif op == CarOperation.ACCEL.value:
+            self.handle_accel(request, speed)
+        elif op == CarOperation.DECEL.value:
+            self.handle_decel(request, speed)
+        else:
+            raise Exception("Invalid operation")
             
     def get_request(self):
         request = self.prev_car.recv(1024).decode("utf-8")
         op, speed = self.parse_request(request)
 
-        match op:
-            case CarOperation.CLOSE.value:
-                self.handle_close()
-            case CarOperation.ACCEL.value:
-                self.handle_accel(request, speed)
-            case CarOperation.DECEL.value:
-                self.handle_decel(request, speed)
-            case _:
-                raise Exception("Invalid operation")
+        if op == CarOperation.CLOSE.value:
+            self.handle_close()
+        elif op == CarOperation.ACCEL.value:
+            self.handle_accel(request, speed)
+        elif op == CarOperation.DECEL.value:
+            self.handle_decel(request, speed)
+        else:
+            raise Exception("Invalid operation")
 
     def __del__(self):
         self.prev_car.close()

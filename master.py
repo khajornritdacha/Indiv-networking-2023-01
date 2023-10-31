@@ -15,7 +15,7 @@ next_client.connect((next_ip, port))
 
 while True :
     try:
-        request = input("Enter new speed : ")
+        request = input("Enter new command(close/accel/decel): ")
         op, speed = request.split()
         op = op.lower()
         speed = int(speed)

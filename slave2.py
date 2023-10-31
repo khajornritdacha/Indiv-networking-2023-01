@@ -23,14 +23,14 @@ print(f"Accepted connection from {addr[0]}:{addr[1]}")
 while True :
     try:
         request = client_socket.recv(1024).decode("utf-8")
-        if request.lower() == CarOperation.CLOSE.value :
-            client_socket.send(CarOperation.CLOSE.value.encode("utf-8"))
-            break
-        
         op, speed = request.split()
         op = op.lower()
         speed = int(speed)
 
+        if op == CarOperation.CLOSE.value :
+            client_socket.send(CarOperation.CLOSE.value.encode("utf-8"))
+            break
+                
         if op == CarOperation.ACCEL.value:
             car.changeSpeed(int(request[5:]), 1000)
             response = CarOperation.OK.encode("utf-8")

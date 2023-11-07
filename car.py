@@ -3,7 +3,6 @@ from overdrive import Overdrive
 from carEnum import CarOperation
 
 class Car:
-    # TODO: handle close connection
     def __init__(self, car_mac_addr, next_ip, next_port, **kwargs):
         self.car = Overdrive(car_mac_addr)
         
@@ -105,8 +104,8 @@ class Car:
                         0 : to close
                         1 x : to accel with speed x
                         2 x : to decel with speed x
-                        3 : to change lane left 
-                        4 : to change lane right
+                        3 x : to change lane left with speed x
+                        4 x : to change lane right with speed x
                         Input: """)
         return self.handle_request(request)
 

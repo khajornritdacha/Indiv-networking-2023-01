@@ -4,6 +4,6 @@ class CarOperation(Enum):
     ACCEL = "accel"
     DECEL = "decel"
     CLOSE = "close"
-    LANE_LEFT = "lane_left"
-    LANE_RIGHT = "lane_right"
+    LANE_LEFT = "l"
+    LANE_RIGHT = "r"
     OK = "OK"

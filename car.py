@@ -30,7 +30,7 @@ class Car:
             print(f"Accepted connection from {addr[0]}:{addr[1]}")
 
     def parse_request(self, request):
-        op, speed = request.split()
+        op, speed = request.strip().split()
         op = op.lower()
         speed = int(speed)
         return op, speed
@@ -40,9 +40,9 @@ class Car:
             self.next_car.send(CarOperation.CLOSE.value.encode("utf-8"))
             
     def handle_accel(self, request, speed):
+        self.car.changeSpeed(speed, 1000)
         if self.next_car is None:
             return
-        self.car.changeSpeed(speed, 1000)
         self.next_car.send(request.encode("utf-8"))
 
     def handle_decel(self, request, speed):
@@ -59,32 +59,47 @@ class Car:
         if self.prev_car is not None:
             self.prev_car.send(CarOperation.OK.value.encode("utf-8"))
 
-    def get_input(self):
-        request = input("Enter new command(close/accel/decel): ")
-        op, speed = self.parse_request(request)
+    def handle_change_lane_left(self, request, speed):
+        self.car.changeLaneLeft(speed, 1000)
+        if self.next_car is None:
+            return
+        self.next_car.send(request.encode("utf-8"))
 
+    def handle_change_lane_right(self, request, speed):
+        self.car.changeLaneRight(speed, 1000)
+        if self.next_car is None:
+            return
+        self.next_car.send(request.encode("utf-8"))
+
+    def handle_request(self, request): 
+        op, speed = self.parse_request(request)
         if op == CarOperation.CLOSE.value:
             self.handle_close()
         elif op == CarOperation.ACCEL.value:
             self.handle_accel(request, speed)
         elif op == CarOperation.DECEL.value:
             self.handle_decel(request, speed)
+        elif op == CarOperation.LANE_LEFT.value:
+            self.handle_change_lane_left(request, speed)
+        elif op == CarOperation.LANE_RIGHT.value:
+            self.handle_change_lane_right(request, speed)
         else:
             raise Exception("Invalid operation")
-            
+        return op
+    
+    def get_input(self):
+        request = input("""Enter new command
+                        0 : to close
+                        1 x : to accel with speed x
+                        2 x : to decel with speed x
+                        3 ('L', 'R') : to change lane left or right
+                        Input: """)
+        return self.handle_request(request)
+
     def get_request(self):
         request = self.prev_car.recv(1024).decode("utf-8")
-        op, speed = self.parse_request(request)
-
-        if op == CarOperation.CLOSE.value:
-            self.handle_close()
-        elif op == CarOperation.ACCEL.value:
-            self.handle_accel(request, speed)
-        elif op == CarOperation.DECEL.value:
-            self.handle_decel(request, speed)
-        else:
-            raise Exception("Invalid operation")
-
+        self.handle_request(request)
+        
     def __del__(self):
         self.prev_car.close()
         self.next_car.close()

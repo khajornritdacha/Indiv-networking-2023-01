@@ -1,34 +1,41 @@
-# slave
 import socket
 from overdrive import Overdrive
 
-# Skull
-car = Overdrive("D5:C7:94:15:78:8D")
+car = Overdrive("CE:71:D1:FC:B5:4F")
 
-cur_ip = "kangbid.local"
-cur_port = 7956
+# connect to master
+cur_slave_ip = "kangbid.local"
+cur_slave_port = 7956
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((cur_ip, cur_port))
+server.bind((cur_slave_ip, cur_slave_port))
 server.listen()
-print(f"Listening on {cur_ip}:{cur_port}")
+print(f"Listening on {cur_slave_ip}:{cur_slave_port}")
 
 client_socket, addr = server.accept()
 print(f"Accepted connection from {addr[0]}:{addr[1]}")
 
-while True :
-    try:
-        request = client_socket.recv(1024).decode("utf-8")
-        if (request.lower() == "close") :
-            client_socket.send("closed".encode("utf-8"))
+def run_slave() :
+    while True :
+        command = client_socket.recv(1024).decode("utf-8")
+
+        print(f"Received: {command}")
+
+        if (command.lower() == "close") :
             break
 
-        print(f"Received: {request}")
+        operator = command
+        if operator[0] == "S" :
+            speed = int(int(operator.split()[1]) * 0.99159595)
+            car.changeSpeed(speed, 100)
+        elif operator == "L" :
+            car.changeLaneLeft(1000, 1000)
+        elif operator == "R" :
+            car.changeLaneRight(1000, 1000)
 
-        response = "accepted".encode("utf-8")
-        car.changeSpeed(int(request[5:]), 1000)
-    except Exception as e:
-        print(e)
-        
-client_socket.close()
-server.close()
+    car.disconnect()
+    client_socket.close()
+    print("Connection to client closed")
+    server.close()
+
+run_slave()

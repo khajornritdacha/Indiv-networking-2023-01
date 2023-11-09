@@ -11,7 +11,7 @@ def run_master() :
 
         operator = command
         if operator[0] == "S" :
-            speed = int(int(operator.split()[1]) * 0.988725)
+            speed = int(operator.split()[1]) * 0.988725
             if car.speed < speed :
                 car.changeSpeed(speed, 100)
                 master.send(command.encode("utf-8")[:1024])

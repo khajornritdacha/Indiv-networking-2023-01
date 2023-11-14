@@ -13,6 +13,8 @@ class Car:
         self.cur_port = None
         self.server = None
         self.factor = 1.0
+        self.next_car = None
+        self.prev_car = None
 
         if "factor" in kwargs:
             self.factor = kwargs["factor"]

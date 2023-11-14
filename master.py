@@ -2,7 +2,7 @@ from car import Car
 from carEnum import CarOperation
 
 # master : big bang
-car = Car("C4:AA:03:6B:22:FA", "jompi.local", 7956, factor=0.988725)
+car = Car("C4:AA:03:6B:22:FA", "jopi.local", 7956, factor=0.988725)
 
 while True:
     try:

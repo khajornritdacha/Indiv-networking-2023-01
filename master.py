@@ -1,29 +1,15 @@
-# master jompi
-import socket
-from overdrive import Overdrive
+from car import Car
+from carEnum import CarOperation
 
-# Police
-car = Overdrive("FF:42:39:21:77:C3")
+# master : big bang
+car = Car("C4:AA:03:6B:22:FA", "jompi.local", 7956, factor=0.988725)
 
-# they can connect more than 1 cars later :)
-ip = "jopi.local"
-port = 7956
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect((ip, port))
-
-while True :
+while True:
     try:
-        new_speed = input("Enter new speed : ")
-
-        if new_speed == "close" :
+        res = car.get_input()
+        print(res)
+        if res == CarOperation.CLOSE.value:
             break
-
-        client.send(new_speed.encode("utf-8")[:1024])
-
-        speed = int(new_speed[5:])
-        car.changeSpeed(speed, 1000)
     except Exception as e:
         print(e)
-
-client.close()
+    

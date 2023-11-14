@@ -41,7 +41,7 @@ def run():
     global slave2_ip, slave2_port
 
     while True:
-        command = slave2_client.recv(1024).decode("utf-8")
+        command = slave2_server.recv(1024).decode("utf-8")
 
         print(f"Received: {command}")
 

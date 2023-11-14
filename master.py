@@ -19,7 +19,7 @@ def setup_self():
     master_mac_address = "C4:AA:03:6B:22:FA"
     master_car = Overdrive(master_mac_address)
 
-    slave1_ip, slave1_port = "jopi.local", "7956"
+    slave1_ip, slave1_port = "jopi.local", 7956
     slave1_port = int(slave1_port)
 
     master_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

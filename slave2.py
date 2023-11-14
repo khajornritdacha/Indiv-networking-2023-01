@@ -22,7 +22,7 @@ def setup_self():
     slave2_mac_address = "CE:71:D1:FC:B5:4F"
     slave2_car = Overdrive(slave2_mac_address)
 
-    slave2_ip, slave2_port = "kangbid.local", "7956"
+    slave2_ip, slave2_port = "kangbid.local", 7956
 
     slave2_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     slave2_server.bind((slave2_ip, slave2_port))

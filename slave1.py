@@ -25,7 +25,7 @@ def setup_self():
     slave1_mac_address = "D5:C7:94:15:78:8D"
     slave1_car = Overdrive(slave1_mac_address)
 
-    slave1_ip, slave1_port = "jopi.local", "7956"
+    slave1_ip, slave1_port = "jopi.local", 7956
 
     slave1_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     slave1_server.bind((slave1_ip, slave1_port))
@@ -40,7 +40,7 @@ def setup_slave2():
     global slave1_mac_address, slave1_car, slave1_ip, slave1_port, slave1_client
     global slave2_ip, slave2_port
 
-    slave2_ip, slave2_port = "kangbid.local", "7956"
+    slave2_ip, slave2_port = "kangbid.local", 7956
 
     slave1_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     slave1_client.connect((slave2_ip, slave2_port))

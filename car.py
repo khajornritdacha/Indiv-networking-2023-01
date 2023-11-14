@@ -12,8 +12,10 @@ class Car:
         self.cur_ip = None
         self.cur_port = None
         self.server = None
-        self.next_car = None
-        self.prev_car = None
+        self.factor = 1.0
+
+        if "factor" in kwargs:
+            self.factor = kwargs["factor"]
 
         if self.next_ip is not None and self.next_port is not None:
             self.next_car = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -49,7 +51,7 @@ class Car:
             self.next_car.send(CarOperation.CLOSE.value.encode("utf-8"))
             
     def handle_accel(self, request, speed):
-        self.car.changeSpeed(speed, 1000)
+        self.car.changeSpeed(int(speed * self.factor), 1000)
         if self.next_car is None:
             return
         self.next_car.send(request.encode("utf-8"))
@@ -65,7 +67,7 @@ class Car:
         
         if speed < 0 or speed > 1000: 
             raise Exception("Invalid speed")
-        self.car.changeSpeed(speed, 1000)
+        self.car.changeSpeed(int(speed * self.factor), 1000)
         
         print(f"Prev car: {self.prev_car}")
         if self.prev_car is not None:

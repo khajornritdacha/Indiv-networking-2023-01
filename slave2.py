@@ -54,7 +54,7 @@ def run():
         if opr == "":
             break
         elif opr[0] == "C":
-            speed = int(opr.split()[1])
+            speed = int(int(opr.split()[1]) * 0.99159595)
             if slave2_car.speed < speed:
                 slave2_car.changeSpeed(speed, 100)
                 slave2_client.send(command_encoded)

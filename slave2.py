@@ -48,7 +48,6 @@ def run():
         command_encoded = command.encode("utf-8")[:1024]
 
         if command.lower() == "close":
-            slave2_client.send(command_encoded)
             break
 
         opr = command

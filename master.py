@@ -1,4 +1,5 @@
 import socket
+import time
 from overdrive import Overdrive
 
 def run_master() :
@@ -11,20 +12,20 @@ def run_master() :
 
         operator = command
         if operator[0] == "S" :
-            speed = int(operator.split()[1]) * 0.988725
+            speed = int(int(operator.split()[1]) * 0.988725)
+            print(car.speed, speed)
             if car.speed < speed :
                 car.changeSpeed(speed, 100)
                 master.send(command.encode("utf-8")[:1024])
             else :
                 master.send(command.encode("utf-8")[:1024])
-                while master.recv(1024) != "accepted" :
-                    pass
+                time.sleep(0.2)
                 car.changeSpeed(speed, 100)
         elif operator == "L" :
-            car.changeLaneLeft(988.725, 1000)
+            car.changeLaneLeft(1000, 1000)
             master.send(command.encode("utf-8")[:1024])
         elif operator == "R" :
-            car.changeLaneRight(988.725, 1000)
+            car.changeLaneRight(1000, 1000)
             master.send(command.encode("utf-8")[:1024])
     car.disconnect()
     master.close()

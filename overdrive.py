@@ -1,10 +1,27 @@
 import struct
 import threading
+#import Queue as queue # Uncomment if using Python 2.7
 import queue
 import logging
 import bluepy.btle as btle
 
 class Overdrive:
+    def __init__(self):
+        self._peripheral = btle.Peripheral()
+        self._readChar = None
+        self._writeChar = None
+        self._connected = False
+        self._reconnect = False
+        self._delegate = OverdriveDelegate(self)
+        self._writeQueue = queue.Queue()
+        self._btleSubThread = None
+        self.speed = 0
+        self.location = 0
+        self.piece = 0
+        self._locationChangeCallbackFunc = None
+        self._pongCallbackFunc = None
+        self._transitionCallbackFunc = None
+
     def __init__(self, addr):
         """Initiate an Anki Overdrive connection object,
         and call connect() function.
@@ -32,7 +49,7 @@ class Overdrive:
                 self.connect()
                 break
             except btle.BTLEException as e:
-                logging.getLogger("anki.overdrive").error(e.message)
+                logging.getLogger("anki.overdrive_t1").error(e.message)
 
     def __del__(self):
         """Deconstructor for an Overdrive object"""
@@ -80,6 +97,7 @@ class Overdrive:
         speed -- Desired speed. (from 0 - 1000)
         accel -- Desired acceleration. (from 0 - 1000)
         """
+        self.speed = speed
         command = struct.pack("<BHHB", 0x24, speed, accel, 0x01)
         self.sendCommand(command)
 

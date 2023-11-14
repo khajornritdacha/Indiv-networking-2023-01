@@ -45,12 +45,12 @@ def run():
             new_speed = int(int(opr.split()[1]) * 0.988725)
             current_speed = master_car.speed
             if current_speed < new_speed:
-                master_car.adjustSpeed(new_speed, 100)
+                master_car.changeSpeed(new_speed, 100)
                 master_client.send(command_encoded)
             else:
                 master_client.send(command_encoded)
                 time.sleep(0.2)
-                master_car.adjustSpeed(new_speed, 100)
+                master_car.changeSpeed(new_speed, 100)
         elif opr == "R":  # Change Lane Right
             master_car.changeLaneRight(1000, 1000)
             master_client.send(command_encoded)

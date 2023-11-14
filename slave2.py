@@ -25,7 +25,9 @@ def run_slave() :
             break
 
         operator = command
-        if operator[0] == "S" :
+        if operator == "" :
+            break
+        elif operator[0] == "S" :
             speed = int(int(operator.split()[1]) * 0.99159595)
             car.changeSpeed(speed, 100)
         elif operator == "L" :

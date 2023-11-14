@@ -1,4 +1,5 @@
 import socket
+import time
 from overdrive import Overdrive
 
 car = Overdrive("D5:C7:94:15:78:8D")
@@ -33,18 +34,17 @@ def run_slave() :
             break
 
         operator = command
-        if operator[0] == "S" :
+        if operator == "" :
+            break
+        elif operator[0] == "S" :
             speed = int(operator.split()[1])
             if car.speed < speed :
                 car.changeSpeed(speed, 100)
                 cur_slave.send(command.encode("utf-8")[:1024])
             else :
                 cur_slave.send(command.encode("utf-8")[:1024])
-                while (cur_slave.recv(1024) != "accepted") :
-                    pass
-                if cur_slave.recv(1024) == "accepted" :
-                    car.changeSpeed(speed, 100)
-                    client_socket.send("accepted".encode("utf-8"))
+                time.sleep(0.1)
+                car.changeSpeed(speed, 100)
         elif operator == "L" :
             car.changeLaneLeft(1000, 1000)
             cur_slave.send(command.encode("utf-8")[:1024])
